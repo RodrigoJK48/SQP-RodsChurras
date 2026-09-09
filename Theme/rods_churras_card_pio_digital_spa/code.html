@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rods Churras - Cardápio Digital</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  
+  <style>
+    :root {
+      --primary: #671E00;
+      --secondary: #005666;
+      --accent-green: #006632;
+      --light-peach: #E69373;
+      --cyan-accent: #73D3E6;
+      --bg-dark: #1E120D;
+      --card-bg: #2A1A14;
+      --card-bg-subtle: #38241D;
+      --text-main: #FFF8F5;
+      --text-muted: #D1B8AE;
+      --border-color: rgba(230, 147, 115, 0.2);
+      --font-title: 'Poppins', sans-serif;
+      --font-body: 'Open Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: hidden;
+    }
+
+    #app-container {
+      width: 100%;
+      max-width: 440px;
+      min-height: 100vh;
+      background: var(--bg-dark);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 40px rgba(0,0,0,0.8);
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30, 18, 13, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-logo-img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .btn-garcom {
+      background: linear-gradient(135deg, var(--secondary), #003742);
+      border: 1px solid var(--cyan-accent);
+      color: #FFF;
+      font-family: var(--font-title);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 6px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-garcom:active {
+      transform: scale(0.95);
+      filter: brightness(1.2);
+    }
+
+    .btn-garcom .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--cyan-accent);
+    }
+
+    /* Screen Transitions */
+    .screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      padding-bottom: 84px;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bottom Navigation / Floating Cart */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 440px;
+      background: rgba(35, 20, 15, 0.97);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 12px 14px;
+      z-index: 60;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-title);
+      font-size: 11px;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: var(--cyan-accent);
+    }
+
+    .nav-item .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: 10px;
+      background: var(--light-peach);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 800;
+      border-radius: 10px;
+      padding: 1px 6px;
+      min-width: 18px;
+      text-align: center;
+      display: none;
+    }
+
+    /* Category Filter / Tabs */
+    .category-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px 16px 8px;
+      scrollbar-width: none;
+    }
+
+    .category-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-btn {
+      white-space: nowrap;
+      background: var(--card-bg);
+      border: 1px solid rgba(230, 147, 115, 0.2);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 18px;
+      font-family: var(--font-title);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .cat-btn.active {
+      background: var(--primary);
+      color: #FFF;
+      border-color: var(--light-peach);
+      box-shadow: 0 2px 10px rgba(103, 30, 0, 0.4);
+    }
+
+    /* Banner Promocional */
+    .banner-promo {
+      margin: 10px 16px 6px;
+      background: linear-gradient(135deg, #4A1200, var(--primary));
+      border: 1px solid var(--light-peach);
+      border-radius: 14px;
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .banner-promo::after {
+      content: "";
+      position: absolute;
+      right: -20px;
+      bottom: -20px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(115, 211, 230, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .banner-tag {
+      background: var(--light-peach);
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
+      font-family: var(--font-title);
+    }
+
+    /* Products List */
+    .product-list {
+      padding: 8px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      position: relative;
+      transition: transform 0.15s ease, border-color 0.2s ease;
+    }
+
+    .product-card:hover {
+      border-color: rgba(230, 147, 115, 0.5);
+    }
+
+    .product-card.promo {
+      border-color: var(--light-peach);
+      background: linear-gradient(to right, #321C14, var(--card-bg));
+    }
+
+    .product-img {
+      width: 95px;
+      height: 95px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #150b07;
+      flex-shrink: 0;
+    }
+
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .product-title {
+      font-family: var(--font-title);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .badge-destaque {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      font-family: var(--font-title);
+      color: var(--cyan-accent);
+      background: rgba(0, 86, 102, 0.4);
+      padding: 2px 6px;
+      border-radius: 4px;
+      width: fit-content;
+      margin-bottom: 4px;
+      border: 0.5px solid var(--cyan-accent);
+    }
+
+    .product-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .product-price {
+      font-family: var(--font-title);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--light-peach);
+    }
+
+    .btn-add-item {
+      background: var(--primary);
+      border: 1px solid var(--light-peach);
+      color: #FFF;
+      border-radius: 8px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-title);
+      cursor: pointer;
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    .btn-add-item:active {
+      transform: scale(0.93);
+      background: #7F2703;
+    }
+
+    /* Modal Doneness / Ponto da Carne */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg-subtle);
+      border-top: 2px solid var(--light-peach);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 18px 28px;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.6);
+      animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-title {
+      font-family: var(--font-title);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .ponto-option {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ponto-option.selected {
+      border-color: var(--cyan-accent);
+      background: rgba(0, 86, 102, 0.4);
+    }
+
+    .ponto-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Carrinho Screen */
+    .cart-container {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .cart-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .cart-item-detail {
+      flex: 1;
+      padding-right: 12px;
+    }
+
+    .cart-item-title {
+      font-family: var(--font-title);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .cart-item-sub {
+      font-size: 11px;
+      color: var(--light-peach);
+    }
+
+    .cart-qty-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #190E0A;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(230, 147, 115, 0.15);
+    }
+
+    .btn-qty {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cart-summary {
+      background: var(--card-bg);
+      border: 1px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: auto;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .summary-row.total {
+      border-top: 1px solid var(--border-color);
+      padding-top: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--light-peach);
+      font-family: var(--font-title);
+    }
+
+    /* Buttons Actions */
+    .btn-primary-action {
+      background: linear-gradient(135deg, var(--accent-green), #004d26);
+      border: 1px solid #34D399;
+      color: #FFF;
+      font-family: var(--font-title);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 13px;
+      border-radius: 12px;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary-action:active {
+      transform: scale(0.97);
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary-action {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-family: var(--font-title);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px;
+      border-radius: 10px;
+      width: 100%;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    /* Checkout & Forms */
+    .form-box {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-family: var(--font-title);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--light-peach);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .form-input {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: #FFF;
+      font-family: var(--font-body);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--cyan-accent);
+    }
+
+    /* Verification / Biometria Simulator */
+    .security-card {
+      background: var(--card-bg);
+      border: 1px solid var(--cyan-accent);
+      border-radius: 16px;
+      padding: 24px 18px;
+      text-align: center;
+      margin: 20px 16px;
+      position: relative;
+    }
+
+    .scan-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(0, 86, 102, 0.4);
+      border: 2px dashed var(--cyan-accent);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .scan-circle.animating {
+      animation: pulseGlow 1.2s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { transform: scale(0.95); border-color: var(--cyan-accent); }
+      to { transform: scale(1.05); border-color: #A5F3FC; box-shadow: 0 0 16px var(--cyan-accent); }
+    }
+
+    /* Gateway de Pagamento */
+    .payment-option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .payment-card-opt {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .payment-card-opt.selected {
+      border-color: var(--accent-green);
+      background: rgba(0, 102, 50, 0.2);
+    }
+
+    /* Toast Garçom */
+    .toast-msg {
+      position: fixed;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: var(--secondary);
+      border: 1px solid var(--cyan-accent);
+      color: #FFF;
+      font-size: 12px;
+      font-family: var(--font-title);
+      padding: 10px 18px;
+      border-radius: 24px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 120;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Header Fixo -->
+    <header>
+      <div class="brand-box">
+        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0UN3PevMOLRu-kdeVym18_Q9k6UrBV2iWTT4UOo-Gord8ZPJjAOQ6zohAjnxjDd1iW2iELg1CyzybtByDCUMmSy0PskOnoqQoftctPghNjugIBQx3LDiKG-QHIAt6iza9-FRVMz3rSfbSbKa5YUG-vpw7_wRD2dx0DHpU_R5T5Yh4vefm-EWRA_qrhSOkBQRI666sNlbIgMQMpg0oKi4--Jx0-n24ZPngNsSua23F8lUey7dfskj9LSFkIcIf_c4jchw" alt="Rods Churras" class="brand-logo-img">
+      </div>
+      <button class="btn-garcom" id="btn-call-waiter" onclick="app.chamarGarcom()">
+        <span class="material-symbols-outlined">room_service</span>
+        <span>Chamar Garçom</span>
+      </button>
+    </header>
+
+    <!-- Toast de Notificação -->
+    <div id="toast" class="toast-msg">
+      <span class="material-symbols-outlined" style="color: var(--cyan-accent); font-size:18px;">notifications_active</span>
+      <span id="toast-text">Garçom acionado para sua mesa!</span>
+    </div>
+
+    <!-- TELA 1: Cardápio (Home) -->
+    <div id="screen-menu" class="screen active">
+      <!-- Banner Combo Promocional -->
+      <div class="banner-promo">
+        <div>
+          <span class="banner-tag">Destaque da Casa</span>
+          <h3 style="font-family: var(--font-title); font-size: 14px; font-weight: 700;">Combo Churrasco Campeiro</h3>
+          <p style="font-size: 11px; color: var(--text-muted); margin: 3px 0 6px;">Picanha fatiada + Arroz biro-biro, Feijão tropeiro e Farofa artesanal.</p>
+          <div style="font-family: var(--font-title); font-weight: 700; color: var(--cyan-accent); font-size: 13px;">R$ 89,90 <span style="font-size: 10px; text-decoration: line-through; opacity: 0.6; color: #fff;">R$ 109,90</span></div>
+        </div>
+        <button class="btn-add-item" style="background: var(--light-peach); color: var(--primary); border: none;" onclick="app.adicionarComboDestaque()">
+          <span class="material-symbols-outlined" style="font-size: 16px;">add_shopping_cart</span>
+          Pedir
+        </button>
+      </div>
+
+      <!-- Filtros de Categorias -->
+      <div class="category-scroll" id="categories-container"></div>
+
+      <!-- Lista de Produtos -->
+      <div class="product-list" id="products-container"></div>
+    </div>
+
+    <!-- TELA 2: Carrinho -->
+    <div id="screen-cart" class="screen">
+      <div style="padding: 16px 16px 0;">
+        <h2 style="font-family: var(--font-title); font-size: 18px; font-weight: 700;">Seu Pedido</h2>
+        <p style="font-size: 12px; color: var(--text-muted);">Revise as carnes e seleções adicionadas</p>
+      </div>
+
+      <div class="cart-container">
+        <div id="cart-items-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+
+        <div id="cart-empty-view" style="display: none; text-align: center; padding: 40px 10px;">
+          <span class="material-symbols-outlined" style="font-size: 54px; color: var(--light-peach); opacity: 0.6;">shopping_basket</span>
+          <p style="font-family: var(--font-title); font-size: 14px; margin-top: 10px;">Seu carrinho está vazio</p>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Volte ao cardápio e escolha os melhores cortes da brasa.</p>
+          <button class="btn-secondary-action" onclick="app.navegarPara('screen-menu')" style="width: auto; margin: 14px auto 0; padding: 8px 18px;">Ver Cardápio</button>
+        </div>
+
+        <div class="cart-summary" id="cart-summary-box">
+          <div class="summary-row">
+            <span>Subtotal de itens:</span>
+            <span id="summary-subtotal">R$ 0,00</span>
+          </div>
+          <div class="summary-row">
+            <span>Taxa de serviço (opcional):</span>
+            <span>R$ 0,00</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total da Mesa:</span>
+            <span id="summary-total">R$ 0,00</span>
+          </div>
+
+          <button class="btn-primary-action" onclick="app.irParaIdentificacao()">
+            <span>Avançar para Identificação</span>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 3: Identificação / Mesa (Sem cadastro prévio) -->
+    <div id="screen-identification" class="screen">
+      <div style="padding: 16px 16px 0;">
+        <button class="btn-secondary-action" onclick="app.navegarPara('screen-cart')" style="width: fit-content; padding: 4px 10px; display: flex; align-items: center; gap: 4px; margin-bottom: 12px;">
+          <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span> Voltar ao Carrinho
+        </button>
+        <h2 style="font-family: var(--font-title); font-size: 18px; font-weight: 700;">Identificação da Mesa</h2>
+        <p style="font-size: 12px; color: var(--text-muted);">Informe sua localização no salão para entrega rápida</p>
+      </div>
+
+      <form class="form-box" onsubmit="event.preventDefault(); app.salvarIdentificacao();">
+        <div class="form-group">
+          <label><span class="material-symbols-outlined" style="font-size: 16px;">person</span> Nome Completo</label>
+          <input type="text" id="input-client-name" class="form-input" placeholder="Ex: Rodrigo Silva" required>
+        </div>
+
+        <div class="form-group">
+          <label><span class="material-symbols-outlined" style="font-size: 16px;">table_restaurant</span> Área de Atendimento / Nº da Mesa</label>
+          <input type="text" id="input-table-number" class="form-input" placeholder="Ex: Salão Principal - Mesa 14" required>
+        </div>
+
+        <div class="form-group">
+          <label><span class="material-symbols-outlined" style="font-size: 16px;">chat</span> WhatsApp (Opcional - para status)</label>
+          <input type="tel" id="input-whatsapp" class="form-input" placeholder="(11) 99999-9999">
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+          <span>Validar Credenciais do Dispositivo</span>
+          <span class="material-symbols-outlined">verified_user</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- TELA 4: Prova de Vida & Credenciais do Dispositivo -->
+    <div id="screen-security" class="screen">
+      <div style="padding: 16px 16px 0;">
+        <h2 style="font-family: var(--font-title); font-size: 18px; font-weight: 700;">Segurança da Sessão</h2>
+        <p style="font-size: 12px; color: var(--text-muted);">Camada de segurança e validação de credencial local</p>
+      </div>
+
+      <div class="security-card">
+        <div class="scan-circle" id="biometry-icon-box">
+          <span class="material-symbols-outlined" style="font-size: 42px; color: var(--cyan-accent);" id="security-icon-symbol">fingerprint</span>
+        </div>
+        <h3 id="security-status-title" style="font-family: var(--font-title); font-size: 16px; margin-bottom: 6px;">Autenticação do Dispositivo</h3>
+        <p id="security-status-desc" style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+          Aproxime sua biometria ou confirme as credenciais do seu aparelho para autorizar o pedido com segurança na churrascaria.
+        </p>
+
+        <button class="btn-primary-action" id="btn-simulate-auth" onclick="app.executarSimulacaoSeguranca()" style="margin-top: 20px;">
+          <span>Autenticar Agora</span>
+          <span class="material-symbols-outlined">lock_open</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 5: Gateway de Pagamento Simulado -->
+    <div id="screen-payment" class="screen">
+      <div style="padding: 16px 16px 0;">
+        <h2 style="font-family: var(--font-title); font-size: 18px; font-weight: 700;">Pagamento Simulado</h2>
+        <p style="font-size: 12px; color: var(--text-muted);">Selecione como deseja simular a liquidação</p>
+      </div>
+
+      <div class="form-box">
+        <div style="background: var(--card-bg); border-radius: 12px; padding: 12px; border: 1px solid var(--border-color);">
+          <div style="font-size: 11px; color: var(--text-muted);">Valor total a pagar:</div>
+          <div id="payment-amount" style="font-family: var(--font-title); font-size: 22px; font-weight: 700; color: var(--light-peach);">R$ 0,00</div>
+        </div>
+
+        <div class="payment-option-list">
+          <div class="payment-card-opt selected" onclick="app.selecionarMetodoPagamento(this, 'Cartão de Crédito na Mesa')">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="material-symbols-outlined" style="color: var(--cyan-accent);">credit_card</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Cartão de Crédito</div>
+                <div style="font-size: 11px; color: var(--text-muted);">Maquininha será levada à mesa</div>
+              </div>
+            </div>
+            <span class="material-symbols-outlined" style="color: var(--accent-green);">check_circle</span>
+          </div>
+
+          <div class="payment-card-opt" onclick="app.selecionarMetodoPagamento(this, 'PIX Instantâneo')">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="material-symbols-outlined" style="color: var(--cyan-accent);">qr_code_2</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">PIX na Mesa</div>
+                <div style="font-size: 11px; color: var(--text-muted);">QR Code gerado na comanda</div>
+              </div>
+            </div>
+            <span class="material-symbols-outlined" style="color: transparent;">check_circle</span>
+          </div>
+
+          <div class="payment-card-opt" onclick="app.selecionarMetodoPagamento(this, 'Dinheiro / Balcão')">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="material-symbols-outlined" style="color: var(--cyan-accent);">payments</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Dinheiro / Comanda</div>
+                <div style="font-size: 11px; color: var(--text-muted);">Pagamento ao término no salão</div>
+              </div>
+            </div>
+            <span class="material-symbols-outlined" style="color: transparent;">check_circle</span>
+          </div>
+        </div>
+
+        <button class="btn-primary-action" id="btn-process-payment" onclick="app.processarPagamentoSimulado()">
+          <span>Confirmar e Concluir Pedido</span>
+          <span class="material-symbols-outlined">done_all</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 6: Resumo e Confirmação (Limpeza dos Dados) -->
+    <div id="screen-confirmation" class="screen">
+      <div style="padding: 24px 16px; text-align: center;">
+        <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(0, 102, 50, 0.3); border: 2px solid #34D399; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;">
+          <span class="material-symbols-outlined" style="font-size: 38px; color: #34D399;">check</span>
+        </div>
+        <h2 style="font-family: var(--font-title); font-size: 20px; font-weight: 700; color: #FFF;">Pedido Enviado para a Brasa!</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">A cozinha e os assadores do Rods Churras já receberam seu chamado.</p>
+      </div>
+
+      <div style="padding: 0 16px; flex: 1;">
+        <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 16px;">
+          <h4 style="font-family: var(--font-title); font-size: 14px; color: var(--light-peach); margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">Comprovante do Atendimento</h4>
+          
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--text-muted);">Cliente:</span>
+              <span id="confirm-client-name" style="font-weight: 600;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--text-muted);">Local / Mesa:</span>
+              <span id="confirm-table" style="font-weight: 600; color: var(--cyan-accent);">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--text-muted);">Forma de Acerto:</span>
+              <span id="confirm-payment-method" style="font-weight: 600;">-</span>
+            </div>
+            
+            <div style="margin-top: 10px; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+              <span style="color: var(--text-muted); display: block; margin-bottom: 6px;">Itens Selecionados:</span>
+              <ul id="confirm-items-list" style="list-style: none; display: flex; flex-direction: column; gap: 4px;"></ul>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px; font-size: 14px; font-weight: 700;">
+              <span>Total Pago:</span>
+              <span id="confirm-total-amount" style="color: var(--light-peach);">-</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary-action" onclick="app.reiniciarAplicacao()" style="margin-top: 18px;">
+          <span class="material-symbols-outlined">restart_alt</span>
+          <span>Iniciar Novo Pedido / Limpar Dados</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal de Seleção de Ponto da Carne -->
+    <div class="modal-overlay" id="ponto-modal">
+      <div class="modal-box">
+        <h3 class="modal-title" id="modal-product-name">Nome do Produto</h3>
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 14px;">Selecione o ponto ideal da carne para o preparo:</p>
+        
+        <div id="modal-pontos-list"></div>
+
+        <button class="btn-primary-action" onclick="app.confirmarAdicaoAoCarrinho()">
+          <span>Confirmar e Adicionar</span>
+          <span class="material-symbols-outlined">add_circle</span>
+        </button>
+        <button class="btn-secondary-action" onclick="app.fecharModalPonto()">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Barra Inferior de Navegação -->
+    <div class="bottom-bar">
+      <button class="nav-item active" id="nav-btn-menu" onclick="app.navegarPara('screen-menu')">
+        <span class="material-symbols-outlined">restaurant_menu</span>
+        <span>Cardápio</span>
+      </button>
+      <button class="nav-item" id="nav-btn-cart" onclick="app.navegarPara('screen-cart')">
+        <span class="material-symbols-outlined">shopping_bag</span>
+        <span>Carrinho</span>
+        <span class="cart-badge" id="cart-badge-count">0</span>
+      </button>
+      <button class="nav-item" id="nav-btn-call" onclick="app.chamarGarcom()">
+        <span class="material-symbols-outlined">support_agent</span>
+        <span>Atendente</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * BANCO DE DADOS FICTÍCIO EM JSON
+     * Organizado por:
+     * - Tipo de carne (Bovina, Suína, Aves, Acompanhamentos)
+     * - Categoria do produto (Cortes Nobres, Espetos, Combos, Porções)
+     * - Pontos disponíveis da carne (Selada, Mal Passada, Ao Ponto, Bem Passada)
+     * - Destaques / Combos
+     */
+    const CARDAPIO_DATA = {
+      categorias: [
+        { id: "todos", label: "Todos os Cortes", icon: "all_inclusive" },
+        { id: "nobres", label: "Cortes Nobres", icon: "local_fire_department" },
+        { id: "espetos", label: "Espetos Tradicionais", icon: "kebab_dining" },
+        { id: "combos", label: "Combos & Kits", icon: "lunch_dining" },
+        { id: "porcoes", label: "Acompanhamentos", icon: "rice_bowl" }
+      ],
+      produtos: [
+        {
+          id: 1,
+          nome: "Picanha Premium na Brasa",
+          tipoCarne: "Bovina",
+          categoria: "nobres",
+          preco: 79.90,
+          descricao: "500g de corte alto maturada, finalizada com flor de sal na parrilla.",
+          imagem: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80",
+          pontos: ["Mal passada", "Ao ponto para menos", "Ao ponto", "Ao ponto para mais", "Bem passada"],
+          destaque: "Mais Pedido",
+          isPromo: false
+        },
+        {
+          id: 2,
+          nome: "Combo Churrasco Campeiro",
+          tipoCarne: "Bovina",
+          categoria: "combos",
+          preco: 89.90,
+          precoOriginal: 109.90,
+          descricao: "Fatias nobres de Picanha com arroz biro-biro, feijão tropeiro e farofa de ovos artesanal.",
+          imagem: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80",
+          pontos: ["Ao ponto", "Mal passada", "Bem passada"],
+          destaque: "Super Promoção",
+          isPromo: true
+        },
+        {
+          id: 3,
+          nome: "Fraldinha na Manteiga de Garrafa",
+          tipoCarne: "Bovina",
+          categoria: "nobres",
+          preco: 64.90,
+          descricao: "450g de fraldinha macia grelhada no carvão em brasa com chimichurri fresco.",
+          imagem: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=500&q=80",
+          pontos: ["Mal passada", "Ao ponto", "Bem passada"],
+          destaque: null,
+          isPromo: false
+        },
+        {
+          id: 4,
+          nome: "Costelinha Suína Barbecue",
+          tipoCarne: "Suína",
+          categoria: "nobres",
+          preco: 56.90,
+          descricao: "Costelinha defumada por 6 horas com lenha frutífera e glacê barbecue de goiabada.",
+          imagem: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=500&q=80",
+          pontos: ["Ponto da Casa (Suculento)"],
+          destaque: "Defumado",
+          isPromo: false
+        },
+        {
+          id: 5,
+          nome: "Espeto de Alcatra c/ Bacon",
+          tipoCarne: "Bovina",
+          categoria: "espetos",
+          preco: 24.50,
+          descricao: "Cubos de alcatra nobre envoltos em fatias crocantes de bacon artesanal.",
+          imagem: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80",
+          pontos: ["Ao ponto", "Bem passada"],
+          destaque: null,
+          isPromo: false
+        },
+        {
+          id: 6,
+          nome: "Espeto de Coração de Frango",
+          tipoCarne: "Aves",
+          categoria: "espetos",
+          preco: 19.90,
+          descricao: "Temperado com ervas finas, alho tostado e vinho branco seco.",
+          imagem: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=500&q=80",
+          pontos: ["Ao ponto"],
+          destaque: null,
+          isPromo: false
+        },
+        {
+          id: 7,
+          nome: "Queijo Coalho Grelhado c/ Melaço",
+          tipoCarne: "Acompanhamentos",
+          categoria: "porcoes",
+          preco: 18.00,
+          descricao: "Duas peças douradas na brasa, servidas com raspas de limão e melaço de cana.",
+          imagem: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80",
+          pontos: null,
+          destaque: "Vegetariano",
+          isPromo: false
+        },
+        {
+          id: 8,
+          nome: "Pão de Alho Especial c/ Catupiry",
+          tipoCarne: "Acompanhamentos",
+          categoria: "porcoes",
+          preco: 16.50,
+          descricao: "Pão crocante recheado com pasta de alho assado, orégano fresco e requeijão.",
+          imagem: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80",
+          pontos: null,
+          destaque: null,
+          isPromo: false
+        }
+      ]
+    };
+
+    /**
+     * GERENCIADOR SPA (Single Page Application)
+     */
+    class RodsChurrasSPA {
+      constructor() {
+        this.categoriaAtiva = 'todos';
+        this.carrinho = this.carregarCarrinhoStorage();
+        this.produtoPendente = null;
+        this.pontoSelecionado = null;
+        this.metodoPagamento = 'Cartão de Crédito na Mesa';
+        this.cliente = { nome: '', mesa: '', whatsapp: '' };
+        
+        this.init();
+      }
+
+      init() {
+        this.renderizarCategorias();
+        this.renderizarProdutos();
+        this.atualizarBadgeCarrinho();
+      }
+
+      // Local Storage
+      carregarCarrinhoStorage() {
+        try {
+          const raw = localStorage.getItem('rods_churras_cart');
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      salvarCarrinhoStorage() {
+        try {
+          localStorage.setItem('rods_churras_cart', JSON.stringify(this.carrinho));
+        } catch (e) {}
+        this.atualizarBadgeCarrinho();
+      }
+
+      limparTudoStorage() {
+        localStorage.removeItem('rods_churras_cart');
+        this.carrinho = [];
+        this.cliente = { nome: '', mesa: '', whatsapp: '' };
+        this.atualizarBadgeCarrinho();
+      }
+
+      // Navegação
+      navegarPara(telaId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(telaId);
+        if (target) {
+          target.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Atualiza estilo navegação
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        if (telaId === 'screen-menu') {
+          document.getElementById('nav-btn-menu')?.classList.add('active');
+        } else if (telaId === 'screen-cart') {
+          document.getElementById('nav-btn-cart')?.classList.add('active');
+          this.renderizarCarrinho();
+        }
+      }
+
+      // UI: Categorias
+      renderizarCategorias() {
+        const container = document.getElementById('categories-container');
+        if (!container) return;
+        container.innerHTML = CARDAPIO_DATA.categorias.map(cat => `
+          <button class="cat-btn ${cat.id === this.categoriaAtiva ? 'active' : ''}" onclick="app.filtrarCategoria('${cat.id}')">
+            <span class="material-symbols-outlined" style="font-size: 15px;">${cat.icon}</span>
+            <span>${cat.label}</span>
+          </button>
+        `).join('');
+      }
+
+      filtrarCategoria(catId) {
+        this.categoriaAtiva = catId;
+        this.renderizarCategorias();
+        this.renderizarProdutos();
+      }
+
+      // UI: Produtos
+      renderizarProdutos() {
+        const container = document.getElementById('products-container');
+        if (!container) return;
+
+        const lista = CARDAPIO_DATA.produtos.filter(p => {
+          if (this.categoriaAtiva === 'todos') return true;
+          return p.categoria === this.categoriaAtiva;
+        });
+
+        container.innerHTML = lista.map(prod => `
+          <div class="product-card ${prod.isPromo ? 'promo' : ''}">
+            <img src="${prod.imagem}" alt="${prod.nome}" class="product-img" loading="lazy">
+            <div class="product-info">
+              <div>
+                ${prod.destaque ? `<div class="badge-destaque"><span class="material-symbols-outlined" style="font-size:12px;">grade</span> ${prod.destaque}</div>` : ''}
+                <div class="product-title">${prod.nome}</div>
+                <div class="product-desc">${prod.descricao}</div>
+              </div>
+              <div class="product-meta">
+                <div class="product-price">R$ ${prod.preco.toFixed(2).replace('.', ',')}</div>
+                <button class="btn-add-item" onclick="app.abrirSelecaoProduto(${prod.id})">
+                  <span class="material-symbols-outlined" style="font-size: 15px;">add</span>
+                  Adicionar
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Modal de Ponto da Carne
+      abrirSelecaoProduto(id) {
+        const prod = CARDAPIO_DATA.produtos.find(p => p.id === id);
+        if (!prod) return;
+
+        // Se não tiver pontos específicos (ex: acompanhamentos), adiciona direto
+        if (!prod.pontos || prod.pontos.length === 0) {
+          this.adicionarItemCarrinho(prod, null);
+          this.exibirToast(`Adicionado: ${prod.nome}`);
+          return;
+        }
+
+        this.produtoPendente = prod;
+        this.pontoSelecionado = prod.pontos[0]; // default
+
+        document.getElementById('modal-product-name').innerText = prod.nome;
+        const listEl = document.getElementById('modal-pontos-list');
+        listEl.innerHTML = prod.pontos.map((p, index) => `
+          <div class="ponto-option ${index === 0 ? 'selected' : ''}" onclick="app.selecionarPonto(this, '${p}')">
+            <span class="ponto-name">${p}</span>
+            <span class="material-symbols-outlined" style="font-size: 18px; color: var(--cyan-accent);">check</span>
+          </div>
+        `).join('');
+
+        document.getElementById('ponto-modal').classList.add('active');
+      }
+
+      selecionarPonto(el, ponto) {
+        this.pontoSelecionado = ponto;
+        document.querySelectorAll('.ponto-option').forEach(item => item.classList.remove('selected'));
+        el.classList.add('selected');
+      }
+
+      fecharModalPonto() {
+        document.getElementById('ponto-modal').classList.remove('active');
+        this.produtoPendente = null;
+        this.pontoSelecionado = null;
+      }
+
+      confirmarAdicaoAoCarrinho() {
+        if (this.produtoPendente) {
+          this.adicionarItemCarrinho(this.produtoPendente, this.pontoSelecionado);
+          this.exibirToast(`${this.produtoPendente.nome} (${this.pontoSelecionado}) adicionado!`);
+          this.fecharModalPonto();
+        }
+      }
+
+      adicionarComboDestaque() {
+        const combo = CARDAPIO_DATA.produtos.find(p => p.id === 2);
+        if (combo) {
+          this.abrirSelecaoProduto(combo.id);
+        }
+      }
+
+      // Gestão de Itens no Carrinho
+      adicionarItemCarrinho(produto, ponto) {
+        const key = `${produto.id}-${ponto || 'padrao'}`;
+        const itemExistente = this.carrinho.find(i => i.chave === key);
+
+        if (itemExistente) {
+          itemExistente.quantidade += 1;
+        } else {
+          this.carrinho.push({
+            chave: key,
+            id: produto.id,
+            nome: produto.nome,
+            preco: produto.preco,
+            ponto: ponto,
+            quantidade: 1
+          });
+        }
+
+        this.salvarCarrinhoStorage();
+      }
+
+      alterarQtdCarrinho(chave, delta) {
+        const item = this.carrinho.find(i => i.chave === chave);
+        if (!item) return;
+
+        item.quantidade += delta;
+        if (item.quantidade <= 0) {
+          this.carrinho = this.carrinho.filter(i => i.chave !== chave);
+        }
+
+        this.salvarCarrinhoStorage();
+        this.renderizarCarrinho();
+      }
+
+      atualizarBadgeCarrinho() {
+        const count = this.carrinho.reduce((acc, cur) => acc + cur.quantidade, 0);
+        const badge = document.getElementById('cart-badge-count');
+        if (!badge) return;
+        if (count > 0) {
+          badge.innerText = count;
+          badge.style.display = 'block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
+      renderizarCarrinho() {
+        const container = document.getElementById('cart-items-list');
+        const emptyView = document.getElementById('cart-empty-view');
+        const summaryBox = document.getElementById('cart-summary-box');
+
+        if (this.carrinho.length === 0) {
+          container.innerHTML = '';
+          emptyView.style.display = 'block';
+          summaryBox.style.display = 'none';
+          return;
+        }
+
+        emptyView.style.display = 'none';
+        summaryBox.style.display = 'block';
+
+        let subtotal = 0;
+        container.innerHTML = this.carrinho.map(item => {
+          const itemTotal = item.preco * item.quantidade;
+          subtotal += itemTotal;
+          return `
+            <div class="cart-item">
+              <div class="cart-item-detail">
+                <div class="cart-item-title">${item.nome}</div>
+                ${item.ponto ? `<div class="cart-item-sub">Ponto: ${item.ponto}</div>` : ''}
+                <div style="font-size: 12px; font-weight: 700; color: var(--light-peach); margin-top: 2px;">
+                  R$ ${item.preco.toFixed(2).replace('.', ',')}
+                </div>
+              </div>
+              <div class="cart-qty-ctrl">
+                <button class="btn-qty" onclick="app.alterarQtdCarrinho('${item.chave}', -1)">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">remove</span>
+                </button>
+                <span style="font-size: 12px; font-weight: 700; min-width: 14px; text-align: center;">${item.quantidade}</span>
+                <button class="btn-qty" onclick="app.alterarQtdCarrinho('${item.chave}', 1)">
+                  <span class="material-symbols-outlined" style="font-size: 16px;">add</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        const formattedTotal = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+        document.getElementById('summary-subtotal').innerText = formattedTotal;
+        document.getElementById('summary-total').innerText = formattedTotal;
+      }
+
+      irParaIdentificacao() {
+        if (this.carrinho.length === 0) {
+          this.exibirToast('Adicione produtos antes de continuar.');
+          return;
+        }
+        this.navegarPara('screen-identification');
+      }
+
+      salvarIdentificacao() {
+        const nome = document.getElementById('input-client-name').value.trim();
+        const mesa = document.getElementById('input-table-number').value.trim();
+        const whats = document.getElementById('input-whatsapp').value.trim();
+
+        if (!nome || !mesa) {
+          this.exibirToast('Por favor, informe seu nome e sua mesa.');
+          return;
+        }
+
+        this.cliente = { nome, mesa, whatsapp: whats };
+        this.navegarPara('screen-security');
+      }
+
+      // Prova de Vida / Validação de Credencial Simulada
+      executarSimulacaoSeguranca() {
+        const iconBox = document.getElementById('biometry-icon-box');
+        const symbol = document.getElementById('security-icon-symbol');
+        const title = document.getElementById('security-status-title');
+        const desc = document.getElementById('security-status-desc');
+        const btn = document.getElementById('btn-simulate-auth');
+
+        iconBox.classList.add('animating');
+        symbol.innerText = 'fingerprint';
+        title.innerText = 'Validando biometria do aparelho...';
+        desc.innerText = 'Comunicando com os sensores de segurança locais.';
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+
+        setTimeout(() => {
+          iconBox.classList.remove('animating');
+          symbol.innerText = 'verified';
+          symbol.style.color = '#34D399';
+          title.innerText = 'Credenciais Autenticadas!';
+          desc.innerText = 'Prova de vida validada com sucesso no dispositivo.';
+
+          setTimeout(() => {
+            const subtotal = this.carrinho.reduce((acc, i) => acc + (i.preco * i.quantidade), 0);
+            document.getElementById('payment-amount').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+            this.navegarPara('screen-payment');
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            symbol.style.color = 'var(--cyan-accent)';
+            symbol.innerText = 'fingerprint';
+            title.innerText = 'Autenticação do Dispositivo';
+            desc.innerText = 'Aproxime sua biometria ou confirme as credenciais do seu aparelho.';
+          }, 900);
+        }, 1400);
+      }
+
+      // Gateway Simulado
+      selecionarMetodoPagamento(elem, metodo) {
+        this.metodoPagamento = metodo;
+        document.querySelectorAll('.payment-card-opt').forEach(opt => {
+          opt.classList.remove('selected');
+          const check = opt.querySelector('.material-symbols-outlined:last-child');
+          if (check) check.style.color = 'transparent';
+        });
+        elem.classList.add('selected');
+        const activeCheck = elem.querySelector('.material-symbols-outlined:last-child');
+        if (activeCheck) activeCheck.style.color = 'var(--accent-green)';
+      }
+
+      processarPagamentoSimulado() {
+        const btn = document.getElementById('btn-process-payment');
+        btn.innerHTML = `<span class="material-symbols-outlined">sync</span> Processando Simulação...`;
+        btn.disabled = true;
+
+        setTimeout(() => {
+          this.exibirResumoConfirmacao();
+          this.navegarPara('screen-confirmation');
+          btn.innerHTML = `<span>Confirmar e Concluir Pedido</span><span class="material-symbols-outlined">done_all</span>`;
+          btn.disabled = false;
+        }, 1100);
+      }
+
+      exibirResumoConfirmacao() {
+        document.getElementById('confirm-client-name').innerText = this.cliente.nome || 'Cliente Salão';
+        document.getElementById('confirm-table').innerText = this.cliente.mesa || 'Mesa Balcão';
+        document.getElementById('confirm-payment-method').innerText = this.metodoPagamento;
+
+        const subtotal = this.carrinho.reduce((acc, i) => acc + (i.preco * i.quantidade), 0);
+        document.getElementById('confirm-total-amount').innerText = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+
+        const itemsContainer = document.getElementById('confirm-items-list');
+        itemsContainer.innerHTML = this.carrinho.map(item => `
+          <li style="display: flex; justify-content: space-between; color: var(--text-muted);">
+            <span>${item.quantidade}x ${item.nome} ${item.ponto ? `<small>(${item.ponto})</small>` : ''}</span>
+            <span>R$ ${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</span>
+          </li>
+        `).join('');
+      }
+
+      // Limpeza de Dados e Reinício
+      reiniciarAplicacao() {
+        this.limparTudoStorage();
+        document.getElementById('input-client-name').value = '';
+        document.getElementById('input-table-number').value = '';
+        document.getElementById('input-whatsapp').value = '';
+        this.exibirToast('Novo atendimento iniciado!');
+        this.navegarPara('screen-menu');
+      }
+
+      // Notificação Garçom
+      chamarGarcom() {
+        this.exibirToast('Garçom chamado! Um atendente irá até sua mesa.');
+      }
+
+      exibirToast(mensagem) {
+        const toast = document.getElementById('toast');
+        const text = document.getElementById('toast-text');
+        text.innerText = mensagem;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3200);
+      }
+    }
+
+    // Inicialização da instância SPA
+    const app = new RodsChurrasSPA();
+  </script>
+</body>
+</html>

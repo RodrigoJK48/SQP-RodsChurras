@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ember & Steel Churrasco - Cardápio Digital</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Header Fixo -->
+    <header>
+      <div class="brand-box">
+        <span class="material-symbols-outlined" style="color: var(--color-primary-accent); font-size: 28px;">local_fire_department</span>
+        <div class="brand-title">Ember & <span>Steel</span></div>
+      </div>
+      <button class="btn-garcom" id="btn-call-waiter" onclick="app.chamarGarcom()">
+        <span class="material-symbols-outlined">room_service</span>
+        <span>Chamar Garçom</span>
+      </button>
+    </header>
+
+    <!-- Toast de Notificação -->
+    <div id="toast" class="toast-msg">
+      <span class="material-symbols-outlined" style="color: var(--color-cyan-accent); font-size:18px;">notifications_active</span>
+      <span id="toast-text">Garçom acionado para sua mesa!</span>
+    </div>
+
+    <!-- TELA 1: Cardápio (Home) -->
+    <div id="screen-menu" class="screen active">
+      <!-- Banner Combo Promocional -->
+      <div class="banner-promo">
+        <div>
+          <span class="banner-tag">Destaque da Brasa</span>
+          <h3 style="font-family: var(--font-title); font-size: 14px; font-weight: 700;">Combo Churrasco Campeiro</h3>
+          <p style="font-size: 11px; color: var(--color-text-muted); margin: 3px 0 6px;">Picanha fatiada + Arroz biro-biro, Feijão tropeiro e Farofa artesanal.</p>
+          <div style="font-family: var(--font-title); font-weight: 700; color: var(--color-cyan-accent); font-size: 14px;">R$ 89,90 <span style="font-size: 10px; text-decoration: line-through; opacity: 0.6; color: #fff;">R$ 109,90</span></div>
+        </div>
+        <button class="btn-add-item" style="background: var(--color-primary-accent); color: var(--color-primary-dark); border: none;" onclick="app.adicionarComboDestaque()">
+          <span class="material-symbols-outlined" style="font-size: 16px;">add_shopping_cart</span>
+          Pedir
+        </button>
+      </div>
+
+      <!-- Filtros de Categorias -->
+      <div class="category-scroll" id="categories-container"></div>
+
+      <!-- Lista de Produtos -->
+      <div class="product-list" id="products-container"></div>
+    </div>
+
+    <!-- TELA 2: Carrinho -->
+    <div id="screen-cart" class="screen">
+      <div style="padding: 16px 16px 0;">
+        <h2 style="font-family: var(--font-title); font-size: 18px; font-weight: 700;">Seu Pedido</h2>
+        <p style="font-size: 12px; color: var(--color-text-muted);">Revise as carnes e seleções adicionadas</p>
+      </div>
+
+      <div class="cart-container">
+        <div id="cart-items-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+
+        <div id="cart-empty-view" style="display: none; text-align: center; padding: 40px 10px;">
+          <span class="material-symbols-outlined" style="font-size: 54px; color: var(--color-primary-accent); opacity: 0.6;">shopping_basket</span>
+          <p style="font-family: var(--font-title); font-size: 14px; margin-top: 10px;">Seu carrinho está vazio</p>
+          <p style="font-size: 11px; color: var(--color-text-muted); margin-top: 4px;">Volte ao cardápio e escolha os melhores cortes da brasa.</p>
+          <button class="btn-secondary-action" onclick="app.navegarPara('screen-menu')" style="width: auto; margin: 14px auto 0; padding: 8px 18px;">Ver Cardápio</button>
+        </div>
+
+        <div class="cart-summary" id="cart-summary-box">
+          <div class="summary-row">
+            <span>Subtotal de itens:</span>
+            <span id="summary-subtotal">R$ 0,00</span>
+          </div>
+          <div class="summary-row">
+            <span>Taxa de serviço (opcional):</span>
+            <span>R$ 0,00</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total da Mesa:</span>
+            <span id="summary-total">R$ 0,00</span>
+          </div>
+
+          <button class="btn-primary-action" onclick="app.irParaIdentificacao()">
+            <span>Avançar para Identificação</span>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 3: Identificação / Mesa (Sem cadastro prévio até checkout) -->
+    <div id="screen-identification" class="screen">
+      <div style="padding: 16px 16px 0;">
+        <button class="btn-secondary-action" onclick="app.navegarPara('screen-cart')" style="width: fit-content; padding: 4px 10px; display: flex; align-items: center; gap: 4px; margin-bottom: 12px;">
+          <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span> Voltar ao Carrinho
+        </button>
+        <h2 style="font-family: var(--font-title); font-size: 18px; font-weight: 700;">Identificação da Mesa</h2>
+        <p style="font-size: 12px; color: var(--color-text-muted);">Informe sua localização no salão para entrega rápida</p>
+      </div>
+
+      <form class="form-box" onsubmit="event.preventDefault(); app.salvarIdentificacao();">
+        <div class="form-group">
+          <label><span class="material-symbols-outlined" style="font-size: 16px;">person</span> Nome Completo</label>
+          <input type="text" id="input-client-name" class="form-input" placeholder="Ex: Rodrigo Silva" required>
+        </div>
+
+        <div class="form-group">
+          <label><span class="material-symbols-outlined" style="font-size: 16px;">table_restaurant</span> Área de Atendimento / Nº da Mesa</label>
+          <input type="text" id="input-table-number" class="form-input" placeholder="Ex: Salão Principal - Mesa 14" required>
+        </div>
+
+        <div class="form-group">
+          <label><span class="material-symbols-outlined" style="font-size: 16px;">chat</span> WhatsApp (Opcional - para status)</label>
+          <input type="tel" id="input-whatsapp" class="form-input" placeholder="(11) 99999-9999">
+        </div>
+
+        <button type="submit" class="btn-primary-action">
+          <span>Validar Credenciais do Dispositivo</span>
+          <span class="material-symbols-outlined">verified_user</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- TELA 4: Prova de Vida & Credenciais do Dispositivo -->
+    <div id="screen-security" class="screen">
+      <div style="padding: 16px 16px 0;">
+        <h2 style="font-family: var(--font-title); font-size: 18px; font-weight: 700;">Segurança da Sessão</h2>
+        <p style="font-size: 12px; color: var(--color-text-muted);">Camada de segurança e validação de credencial local</p>
+      </div>
+
+      <div class="security-card">
+        <div class="scan-circle" id="biometry-icon-box">
+          <span class="material-symbols-outlined" style="font-size: 42px; color: var(--color-cyan-accent);" id="security-icon-symbol">fingerprint</span>
+        </div>
+        <h3 id="security-status-title" style="font-family: var(--font-title); font-size: 16px; margin-bottom: 6px;">Autenticação do Dispositivo</h3>
+        <p id="security-status-desc" style="font-size: 12px; color: var(--color-text-muted); line-height: 1.5;">
+          Aproxime sua biometria ou confirme as credenciais do seu aparelho para autorizar o pedido com segurança na churrascaria.
+        </p>
+
+        <button class="btn-primary-action" id="btn-simulate-auth" onclick="app.executarSimulacaoSeguranca()" style="margin-top: 20px;">
+          <span>Autenticar Agora</span>
+          <span class="material-symbols-outlined">lock_open</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 5: Gateway de Pagamento Simulado -->
+    <div id="screen-payment" class="screen">
+      <div style="padding: 16px 16px 0;">
+        <h2 style="font-family: var(--font-title); font-size: 18px; font-weight: 700;">Pagamento Simulado</h2>
+        <p style="font-size: 12px; color: var(--color-text-muted);">Selecione como deseja simular a liquidação</p>
+      </div>
+
+      <div class="form-box">
+        <div style="background: var(--color-surface); border-radius: 12px; padding: 14px; border: 1px solid var(--color-border);">
+          <div style="font-size: 11px; color: var(--color-text-muted);">Valor total a pagar:</div>
+          <div id="payment-amount" style="font-family: var(--font-title); font-size: 22px; font-weight: 700; color: var(--color-primary-accent);">R$ 0,00</div>
+        </div>
+
+        <div class="payment-option-list">
+          <div class="payment-card-opt selected" onclick="app.selecionarMetodoPagamento(this, 'Cartão de Crédito na Mesa')">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="material-symbols-outlined" style="color: var(--color-cyan-accent);">credit_card</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Cartão de Crédito</div>
+                <div style="font-size: 11px; color: var(--color-text-muted);">Maquininha será levada à mesa</div>
+              </div>
+            </div>
+            <span class="material-symbols-outlined" style="color: var(--color-grill-green);">check_circle</span>
+          </div>
+
+          <div class="payment-card-opt" onclick="app.selecionarMetodoPagamento(this, 'PIX Instantâneo')">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="material-symbols-outlined" style="color: var(--color-cyan-accent);">qr_code_2</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">PIX na Mesa</div>
+                <div style="font-size: 11px; color: var(--color-text-muted);">QR Code gerado na comanda</div>
+              </div>
+            </div>
+            <span class="material-symbols-outlined" style="color: transparent;">check_circle</span>
+          </div>
+
+          <div class="payment-card-opt" onclick="app.selecionarMetodoPagamento(this, 'Dinheiro / Balcão')">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="material-symbols-outlined" style="color: var(--color-cyan-accent);">payments</span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Dinheiro / Comanda</div>
+                <div style="font-size: 11px; color: var(--color-text-muted);">Pagamento ao término no salão</div>
+              </div>
+            </div>
+            <span class="material-symbols-outlined" style="color: transparent;">check_circle</span>
+          </div>
+        </div>
+
+        <button class="btn-primary-action" id="btn-process-payment" onclick="app.processarPagamentoSimulado()">
+          <span>Confirmar e Concluir Pedido</span>
+          <span class="material-symbols-outlined">done_all</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TELA 6: Resumo e Confirmação (Limpeza dos Dados) -->
+    <div id="screen-confirmation" class="screen">
+      <div style="padding: 24px 16px; text-align: center;">
+        <div style="width: 68px; height: 68px; border-radius: 50%; background: rgba(0, 102, 50, 0.3); border: 2px solid #34D399; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;">
+          <span class="material-symbols-outlined" style="font-size: 38px; color: #34D399;">check</span>
+        </div>
+        <h2 style="font-family: var(--font-title); font-size: 20px; font-weight: 700; color: #FFF;">Pedido Enviado para a Brasa!</h2>
+        <p style="font-size: 12px; color: var(--color-text-muted); margin-top: 4px;">A cozinha e os assadores já receberam seu chamado.</p>
+      </div>
+
+      <div style="padding: 0 16px; flex: 1;">
+        <div style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 14px; padding: 16px;">
+          <h4 style="font-family: var(--font-title); font-size: 14px; color: var(--color-primary-accent); margin-bottom: 10px; border-bottom: 1px solid var(--color-border); padding-bottom: 6px;">Comprovante do Atendimento</h4>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--color-text-muted);">Cliente:</span>
+              <span id="confirm-client-name" style="font-weight: 600;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--color-text-muted);">Local / Mesa:</span>
+              <span id="confirm-table" style="font-weight: 600; color: var(--color-cyan-accent);">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--color-text-muted);">Forma de Acerto:</span>
+              <span id="confirm-payment-method" style="font-weight: 600;">-</span>
+            </div>
+
+            <div style="margin-top: 10px; border-top: 1px dashed var(--color-border); padding-top: 8px;">
+              <span style="color: var(--color-text-muted); display: block; margin-bottom: 6px;">Itens Selecionados:</span>
+              <ul id="confirm-items-list" style="list-style: none; display: flex; flex-direction: column; gap: 4px;"></ul>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 10px; border-top: 1px solid var(--color-border); padding-top: 8px; font-size: 14px; font-weight: 700;">
+              <span>Total Pago:</span>
+              <span id="confirm-total-amount" style="color: var(--color-primary-accent);">-</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary-action" onclick="app.reiniciarAplicacao()" style="margin-top: 18px;">
+          <span class="material-symbols-outlined">restart_alt</span>
+          <span>Iniciar Novo Pedido / Limpar Dados</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal de Seleção de Ponto da Carne -->
+    <div class="modal-overlay" id="ponto-modal">
+      <div class="modal-box">
+        <h3 class="modal-title" id="modal-product-name">Nome do Produto</h3>
+        <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 14px;">Selecione o ponto ideal da carne para o preparo:</p>
+
+        <div id="modal-pontos-list"></div>
+
+        <button class="btn-primary-action" onclick="app.confirmarAdicaoAoCarrinho()">
+          <span>Confirmar e Adicionar</span>
+          <span class="material-symbols-outlined">add_circle</span>
+        </button>
+        <button class="btn-secondary-action" onclick="app.fecharModalPonto()">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Barra Inferior de Navegação -->
+    <div class="bottom-bar">
+      <button class="nav-item active" id="nav-btn-menu" onclick="app.navegarPara('screen-menu')">
+        <span class="material-symbols-outlined">restaurant_menu</span>
+        <span>Cardápio</span>
+      </button>
+      <button class="nav-item" id="nav-btn-cart" onclick="app.navegarPara('screen-cart')">
+        <span class="material-symbols-outlined">shopping_bag</span>
+        <span>Carrinho</span>
+        <span class="cart-badge" id="cart-badge-count">0</span>
+      </button>
+      <button class="nav-item" id="nav-btn-call" onclick="app.chamarGarcom()">
+        <span class="material-symbols-outlined">support_agent</span>
+        <span>Atendente</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript App Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

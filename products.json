@@ -1,0 +1,108 @@
+{
+  "categorias": [
+    { "id": "todos", "label": "Todos os Cortes", "icon": "all_inclusive" },
+    { "id": "nobres", "label": "Cortes Nobres", "icon": "local_fire_department" },
+    { "id": "espetos", "label": "Espetos Tradicionais", "icon": "kebab_dining" },
+    { "id": "combos", "label": "Combos & Kits", "icon": "lunch_dining" },
+    { "id": "porcoes", "label": "Acompanhamentos", "icon": "rice_bowl" }
+  ],
+  "produtos": [
+    {
+      "id": 1,
+      "nome": "Picanha Premium na Brasa",
+      "tipoCarne": "Bovina",
+      "categoria": "nobres",
+      "preco": 79.90,
+      "descricao": "500g de corte alto maturada, finalizada com flor de sal na parrilla em fogo de lenha de macieira.",
+      "imagem": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+      "pontos": ["Selada", "Mal passada", "Ao ponto para menos", "Ao ponto", "Ao ponto para mais", "Bem passada"],
+      "destaque": "Mais Pedido",
+      "isPromo": false
+    },
+    {
+      "id": 2,
+      "nome": "Combo Churrasco Campeiro",
+      "tipoCarne": "Bovina",
+      "categoria": "combos",
+      "preco": 89.90,
+      "precoOriginal": 109.90,
+      "descricao": "Fatias nobres de Picanha com arroz biro-biro, feijão tropeiro e farofa de ovos artesanal.",
+      "imagem": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80",
+      "pontos": ["Ao ponto", "Mal passada", "Bem passada"],
+      "destaque": "Combo Destaque",
+      "isPromo": true
+    },
+    {
+      "id": 3,
+      "nome": "Fraldinha na Manteiga de Garrafa",
+      "tipoCarne": "Bovina",
+      "categoria": "nobres",
+      "preco": 64.90,
+      "descricao": "450g de fraldinha macia grelhada no carvão em brasa com chimichurri fresco de ervas.",
+      "imagem": "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=600&q=80",
+      "pontos": ["Mal passada", "Ao ponto", "Bem passada"],
+      "destaque": null,
+      "isPromo": false
+    },
+    {
+      "id": 4,
+      "nome": "Costelinha Suína Barbecue de Goiabada",
+      "tipoCarne": "Suína",
+      "categoria": "nobres",
+      "preco": 56.90,
+      "descricao": "Costelinha defumada por 6 horas com lenha frutífera e glacê artesanal barbecue de goiabada.",
+      "imagem": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80",
+      "pontos": ["Ponto da Casa (Suculento)"],
+      "destaque": "Especialidade",
+      "isPromo": false
+    },
+    {
+      "id": 5,
+      "nome": "Espeto de Alcatra c/ Bacon",
+      "tipoCarne": "Bovina",
+      "categoria": "espetos",
+      "preco": 24.50,
+      "descricao": "Cubos de alcatra nobre envoltos em fatias crocantes de bacon artesanal no espeto de bambu.",
+      "imagem": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=600&q=80",
+      "pontos": ["Ao ponto", "Bem passada"],
+      "destaque": null,
+      "isPromo": false
+    },
+    {
+      "id": 6,
+      "nome": "Espeto de Coração de Frango Marino",
+      "tipoCarne": "Aves",
+      "categoria": "espetos",
+      "preco": 19.90,
+      "descricao": "Corações de frango marinados em ervas finas, alho tostado e vinho branco seco.",
+      "imagem": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=600&q=80",
+      "pontos": ["Ao ponto"],
+      "destaque": null,
+      "isPromo": false
+    },
+    {
+      "id": 7,
+      "nome": "Queijo Coalho Grelhado c/ Melaço",
+      "tipoCarne": "Acompanhamentos",
+      "categoria": "porcoes",
+      "preco": 18.00,
+      "descricao": "Duas peças de queijo coalho douradas na brasa, servidas com raspas de limão e melaço de cana.",
+      "imagem": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80",
+      "pontos": [],
+      "destaque": "Sem Carne",
+      "isPromo": false
+    },
+    {
+      "id": 8,
+      "nome": "Pão de Alho Especial c/ Catupiry",
+      "tipoCarne": "Acompanhamentos",
+      "categoria": "porcoes",
+      "preco": 16.50,
+      "descricao": "Pão baguette crocante recheado com pasta de alho assado, orégano fresco e catupiry original.",
+      "imagem": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80",
+      "pontos": [],
+      "destaque": null,
+      "isPromo": false
+    }
+  ]
+}

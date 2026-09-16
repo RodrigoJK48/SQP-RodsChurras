@@ -15,6 +15,13 @@
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="styles.css">
+
+  <!-- Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
 
@@ -293,5 +300,19 @@
 
   <!-- JavaScript App Logic -->
   <script src="app.js"></script>
+  <script>
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registrado:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Falha ao registrar o Service Worker:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>

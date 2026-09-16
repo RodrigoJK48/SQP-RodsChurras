@@ -1,0 +1,25 @@
+{
+    "theme_color":"#8936FF",
+    "background_color":"#2EC6FE",
+    "icons":[
+        {
+            "purpose":"maskable",
+            "sizes":"512x512",
+            "src":"icon512_maskable.png",
+            "type":"image/png"
+        },
+        {
+            "purpose":"any",
+            "sizes":"512x512",
+            "src":"icon512_rounded.png",
+            "type":"image/png"
+        }
+    ],
+    "orientation":"portrait",
+    "display":"minimal-ui",
+    "dir":"auto",
+    "lang":"pt-BR",
+    "name":"Rods Churras",
+    "start_url":"https://rodrigojk48.github.io/SQP-RodsChurras/",
+    "scope":"https://rodrigojk48.github.io/SQP-RodsChurras/"
+}
